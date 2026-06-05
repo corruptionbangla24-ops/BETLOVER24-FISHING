@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 });
 
 // 🎰 [উইনগো কালার ট্রেড ওরিজিনাল ডোমেইন সিঙ্ক ভাই ভাই]
-const MAIN_SITE_URL = "https://onrender.com"; 
+const MAIN_SITE_URL = "https://betlover247.onrender.com"; 
 
 // 💰 ১. লাইভ অ্যাকাউন্ট ব্যালেন্স ইন্টারসেপ্টর গেটওয়ে (১ শতভাগ টাইমআউট ও জ্যাম ব্লকার বর্ম ওস্তাদ)
 app.get('/api/fishing-balance', async (req, res) => {
@@ -169,5 +169,5 @@ app.get('/', (req, res) => { res.sendFile(path.resolve(__dirname, 'index.html'))
 io.on('connection', (socket) => {});
 
 // ⚡ কাস্টম নোড সার্ভার পোর্ট গেটওয়ে লাইভ অন ফায়ার (৪০০০০ পোর্টে ডেডিকেটেড সিঙ্ক লক!)
-const PORT = process.env.PORT || 40000; 
+const PORT = process.env.PORT || 7100; 
 server.listen(PORT, () => { console.log(`🔮 Dragon Ball Fishing JILI Mode secure engine running on port ${PORT}`); });
