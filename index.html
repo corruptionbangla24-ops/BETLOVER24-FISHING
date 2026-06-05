@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JILI FISHING - DEEP SEA CANNON GUNNER</title>
+    <style>
+        /* 🎨 ক্যাসিনো ফিশিং এরিনা সিএসএস ফ্রেম ইনজেকশন ভাই ভাই */
+        html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #05070c; font-family: 'Segoe UI', Roboto, sans-serif; color: #fff; -webkit-tap-highlight-color: transparent; user-select: none; }
+        .header { display: none !important; } 
+        
+        body { 
+            background: radial-gradient(circle at center, #061124 0%, #010307 100%); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            height: 100vh; 
+        }
+
+        /* 🏟️ মেইন নিওন আন্ডারওয়াটার সারফেস কার্পেট ক্যানভাস Wrapper */
+        .dragon-arena-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            height: 335px;
+            margin: 10px auto 0 auto;
+            background: #02050b;
+            border: 3px solid #00d2ff;
+            border-radius: 24px;
+            box-shadow: 0 0 25px rgba(0,210,255,0.25), inset 0 0 20px rgba(0,0,0,0.9);
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        /* 🐉 ভাসমান আন্ডারওয়াটার টার্গেট উইজেট নোড */
+        .water-object-target {
+            position: absolute;
+            width: 65px;
+            height: 65px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.1s ease;
+        }
+        .water-object-target img { width: 100%; height: 100%; object-fit: contain; }
+
+        /* 📢 লাইভ মেসেজ প্যানেল বার */
+        .win-status-container { position: relative; z-index: 10; text-align: center; padding: 10px; margin: 4px 12px; background: rgba(9, 12, 18, 0.6); border-radius: 10px; border: 1px solid rgba(255,255,255,0.02); }
+        #win-text-msg { font-size: 12px; font-weight: 700; color: #38bdf8; letter-spacing: 0.3px; }
+
+        /* 🎛️ নিচের মেইন গেম কন্ট্রোল প্যানেল ফুটার (মোবাইলের যেকোনো ফ্রেমে ওয়ান-শটে ওপরে লিফটিং ভাসমান লক!) */
+        .footer-controls { position: relative; z-index: 50; background: #07090e; border-top: 1px solid #161b29; padding: 20px 15px 50px 15px; box-shadow: 0 -8px 25px rgba(0,0,0,0.7); }
+        .play-section { display: flex; justify-content: space-between; align-items: center; gap: 10px; max-width: 450px; margin: 0 auto; margin-bottom: 25px; }
+        .bet-btn-nav { background: #111522; border: 1px solid #20293d; color: #00d2ff; font-size: 18px; font-weight: 800; width: 40px; height: 40px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        
+        /* 🚀 ফায়ার বোতাম অ্যানিমেশন গলো */
+        .play-btn { flex: 1; background: linear-gradient(180deg, #00d2ff 0%, #005f73 100%); color: #fff; font-size: 16px; font-weight: 900; border: none; padding: 12px 0; border-radius: 10px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 12px rgba(0,210,255,0.3); }
+        .play-btn:disabled { background: #141721 !important; border-color: #1f2536 !important; color: #4b5563 !important; box-shadow: none !important; cursor: not-allowed; }
+        .icon-btn { background: #111522; border: 1px solid #20293d; width: 40px; height: 40px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #00d2ff; font-weight: bold; }
+        .icon-btn.active { background: #00d2ff; color: #000; box-shadow: 0 0 10px rgba(0,210,255,0.4); }
+
+        /* 💥 ক্যানন ক্যাটাপল্ট ব্লাস্ট বিস্ফোরণ এনিমেশন ফ্রেম */
+        .target-blasted-effect { animation: seaBlastPulse 0.4s ease-out forwards; }
+        @keyframes seaBlastPulse {
+            0% { transform: scale(1) rotate(0deg); filter: hue-rotate(0deg) brightness(1); }
+            50% { transform: scale(1.4) rotate(45deg); filter: hue-rotate(120deg) brightness(3); opacity: 0.8; }
+            100% { transform: scale(0) rotate(90deg); filter: hue-rotate(240deg) brightness(5); opacity: 0; }
+        }
+
+        .win-glow-bar { border-color: rgba(0, 255, 136, 0.4) !important; background: rgba(0, 255, 136, 0.05) !important; }
+        .win-glow-bar #win-text-msg { color: #00ff88 !important; }
+        .lose-glow-bar { border-color: rgba(255, 51, 102, 0.4) !important; background: rgba(255, 51, 102, 0.05) !important; }
+        .lose-glow-bar #win-text-msg { color: #ff3366 !important; }
+    </style>
+</head>
+<body>
+
+    <div class="header" style="display:none !important;">
+        <div class="balance-box">৳ <span id="user-balance">0.00</span></div>
+    </div>
+
+    <!-- 🏟️ মেইন নিওন ক্যানভাস Wrapper -->
+    <div class="dragon-arena-wrapper" id="fishing-playground">
+        <!-- 🔒 [কিংস ওরিজিনাল কোঅর্ডিনেট সিঙ্ক বর্ম]: আপনার লাইভ স্ক্রিনশটের লেআউট কাটায় কাটায় মিলিয়ে ৫টি জীব লক! -->
+        <div class="water-object-target" id="fish-target-1" style="top: 130px; left: 40px;" onclick="triggerCannonBallShoot(1)"><img src="fish.png" alt="Fish"></div>
+        <div class="water-object-target" id="fish-target-2" style="top: 30px; left: 180px;" onclick="triggerCannonBallShoot(2)"><img src="shark.png" alt="Shark"></div>
+        <div class="water-object-target" id="fish-target-3" style="top: 170px; left: 165px;" onclick="triggerCannonBallShoot(3)"><img src="crown.png" alt="Crown"></div>
+        <div class="water-object-target" id="fish-target-4" style="bottom: 25px; left: 140px;" onclick="triggerCannonBallShoot(4)"><img src="dragon.png" alt="Dragon"></div>
+        <div class="water-object-target" id="fish-target-5" style="top: 200px; right: 145px;" onclick="triggerCannonBallShoot(5)"><img src="turtle.png" alt="Turtle"></div>
+        <div class="water-object-target" id="fish-target-6" style="top: 160px; right: 30px;" onclick="triggerCannonBallShoot(6)"><img src="dragon_mask.png" alt="Dragon Mask"></div>
+    </div>
+
+    <!-- 📢 উইন-লস লাইভ ক্যাসিনো মেসেজ প্যানেল বার -->
+    <div class="win-status-container" id="win-status-box">
+        <span id="win-text-msg">Adjust cannon cost and tap the mystical deep sea targets to shoot and harvest cash rewards!</span>
+    </div>
+
+    <!-- 🎛️ বাজি ও অ্যাকশন কন্ট্রোল ফুটার প্যানেল বার -->
+    <div class="footer-controls">
+        <div class="play-section">
+            <button class="bet-btn-nav" onclick="adjustBet('minus')">-</button>
+            <div style="text-align: center; width: 65px;">
+                <div style="font-size: 9px; color: #aaa; font-weight: bold;">CANNON COST</div>
+                <div style="font-size: 15px; font-weight: 900; color: #fff;" id="bet-display">৳১০</div>
+            </div>
+            <button class="bet-btn-nav" onclick="adjustBet('plus')">+</button>
+
+            <button class="play-btn" id="spin-btn" onclick="triggerCannonBallShoot(0)">FIRE CANNON</button>
+            
+            <div class="icon-group">
+                <button class="icon-btn" id="auto-btn" onclick="toggleAuto()">🔄</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlUserId = urlParams.get('userId') || urlParams.get('id') || urlParams.get('username') || "guest_user";
+        const urlWallet = urlParams.get('wallet') || "main";
+        const SERVER_URL = window.location.origin;
+
+        let balance = 0.00;
+        let currentBet = 10; // 👈 ওরিজিনাল ১০ টাকা বেস স্টেক থেকে মাখনের মতো প্লাস-মাইনাস হ্যান্ডলিং লক ওস্তাদ!
+        let isSpinning = false;
+        let isAuto = false;
+        let autoInterval = null;
+
+        // 🔒 [কিংস কারেকশন ট্রিক]: আপনার লাইভ স্ক্রিনশটের ছবিগুলোর নাম ও আইডি পুরোপুরি সিঙ্ক লক ওস্তাদ ভাই ভাই!
+        const symbolImagesMap = {
+            "1": "fish.png",
+            "2": "shark.png",
+            "3": "crown.png",
+            "4": "dragon.png",
+            "5": "turtle.png",
+            "6": "dragon_mask.png"
+        };
+
+        const targetPositionsMap = {
+            1: { name: "🐠 গোল্ডেন ফিশ", elId: "fish-target-1" },
+            2: { name: "🦈 গ্রে শার্ক হাঙ্গর", elId: "fish-target-2" },
+            3: { name: "👑 গোল্ডেন রাজমুকুট", elId: "fish-target-3" },
+            4: { name: "🐉 গ্রীন ড্রাগন", elId: "fish-target-4" },
+            5: { name: "🐢 লাকি কচ্ছপ", elId: "fish-target-5" },
+            6: { name: "👹 নিওন ড্রাগন মাস্ক", elId: "fish-target-6" }
+        };
+
+        // 🌊 পানিতে মাছ ও রাজমুকুট অনবরত ভাসমান রাখার ডাইনামিক লাইভ এনিমেশন লুপ ভাই ভাই
+        function runDeepSeaFloatingLoop() {
+            let tick = 0;
+            setInterval(() => {
+                if (isSpinning) return;
+                tick += 0.04;
+                
+                document.getElementById("fish-target-1").style.transform = `translateY(${Math.sin(tick) * 10}px) translateX(${Math.cos(tick) * 4}px)`;
+                document.getElementById("fish-target-2").style.transform = `translateX(${Math.cos(tick * 0.8) * 15}px) translateY(${Math.sin(tick) * 4}px)`;
+                document.getElementById("fish-target-3").style.transform = `translateY(${Math.cos(tick) * 12}px) scale(${1 + Math.sin(tick)*0.03})`;
+                document.getElementById("fish-target-4").style.transform = `translateY(${Math.sin(tick) * 8}px) translateX(${Math.cos(tick) * 5}px)`;
+                document.getElementById("fish-target-5").style.transform = `translateX(${Math.sin(tick * 0.7) * 12}px) translateY(${Math.cos(tick) * 5}px)`;
+                document.getElementById("fish-target-6").style.transform = `translateY(${Math.sin(tick * 0.9) * 14}px)`;
+            }, 50);
+        }
+        runDeepSeaFloatingLoop();
+
+                function adjustBet(action) {
+            if (isSpinning) return;
+            // ওস্তাদ, প্লাস-মাইনাস নব চাপলে যাতে ১০ টাকা করে স্মুথলি বাড়ে-কমে সেই সিকিউরড মেথড লক!
+            if (action === 'minus' && currentBet > 10) currentBet -= 10;
+            if (action === 'plus' && currentBet < 20000) currentBet += 10;
+            document.getElementById("bet-display").innerText = `৳${currentBet}`;
+            playAudio('click');
+        }
+
+        // 🛫 [🎰 ক্যানন বল লক ও ওরিজিনাল ব্লাস্ট বিস্ফোরণ এনিমেশন নোড]
+        async function triggerCannonBallShoot(targetId) {
+            // 🔒 [ডাবল-ক্লিক ব্লকার ও পিૂર ব্যালেন্স কাটার বর্ম]
+            if (isSpinning || isSpinning === true) return; 
+            
+            // যদি মেইন ফায়ার বোতাম চাপা হয় তবে ৩ নম্বর ওরিজিনাল গোল্ডেন ক্রাউনকে ডিফল্ট লক করা হলো ওস্তাদ
+            let finalTarget = targetId === 0 ? 3 : targetId;
+            let targetConfig = targetPositionsMap[finalTarget];
+
+            isSpinning = true;
+            if (document.getElementById("spin-btn")) document.getElementById("spin-btn").disabled = true;
+            if (document.getElementById("win-status-box")) document.getElementById("win-status-box").className = "win-status-container";
+            if (document.getElementById("win-text-msg")) document.getElementById("win-text-msg").innerText = `🚀 ক্যানন বল ফায়ার করা হয়েছে... ${targetConfig.name} এর দিকে ধেয়ে যাচ্ছে ওস্তাদ...`;
+            
+            playAudio('spin');
+
+            try {
+                const response = await fetch(`${SERVER_URL}/api/fishing-shoot`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: urlUserId, amount: parseFloat(currentBet), wallet: urlWallet, targetTargetId: finalTarget
+                    })
+                });
+
+                const serverRes = await response.json();
+                
+                if (serverRes.success || serverRes.success === true) {
+                    let targetGamePayload = serverRes.gameData || serverRes;
+                    
+                    // ⏱️ ক্যানন বল ট্র্যাভেলিং হাফ-সেকেন্ড অফসেট এনিমেশন হোল্ড
+                    setTimeout(() => {
+                        executeDeepSeaBlastSettlement(targetGamePayload, finalTarget);
+                    }, 600);
+                } else {
+                    alert(serverRes.message || "❌ আপনার অ্যাকাউন্ট ব্যালেন্স জিরো বা অপ্রতুল! দয়া করে রিচার্জ করুন ওস্তাদ।");
+                    stopFishingState();
+                }
+            } catch (err) {
+                stopFishingState();
+            }
+        }
+
+        function executeDeepSeaBlastSettlement(payload, triggeredId) {
+            let shipId = payload.targetTargetId || payload.targetShipId || triggeredId;
+            let targetConfig = targetPositionsMap[shipId];
+            const targetEl = document.getElementById(targetConfig.elId);
+
+            const msgBox = document.getElementById("win-status-box");
+            const textMsg = document.getElementById("win-text-msg");
+
+            if (payload.isBlasted === true || payload.status === "win") {
+                playAudio('win'); 
+                
+                if (targetEl) targetEl.classList.add("target-blasted-effect");
+                if (msgBox) msgBox.className = "win-status-container win-glow-bar";
+                
+                textMsg.innerHTML = `🎉 <b>গ্র্যান্ড ক্যানন ব্লাস্ট সাকসেস ওস্তাদ!</b> ${targetConfig.name} সম্পূর্ণ বিষ্ফোরিত হয়েছে! ওয়ালেটে ৳${payload.winAmount} মেগা ক্যাশ ক্রেডিট লক ভাই ভাই!`;
+                
+                setTimeout(() => {
+                    if (targetEl) {
+                        targetEl.classList.remove("target-blasted-effect");
+                        targetEl.style.opacity = "1";
+                        targetEl.style.transform = "scale(1)";
+                    }
+                }, 4000);
+            } else {
+                playAudio('wheel'); 
+                if (msgBox) msgBox.className = "win-status-container lose-glow-bar";
+                textMsg.innerHTML = `❌ <b>ক্যানন শট ডিফ্লেক্টেড ওস্তাদ!</b> ${targetConfig.name} এর বর্ম ভাঙা যায়নি। আবার অন ফায়ার নিশানা লক করুন ভাই ভাই!`;
+            }
+
+            if (window.parent) window.parent.postMessage({ action: "refresh_wallet" }, "*");
+            stopFishingState();
+
+            if (isAuto) {
+                autoInterval = setTimeout(() => {
+                    if (isAuto) triggerCannonBallShoot(0);
+                }, 3500);
+            }
+        }
+
+        if (typeof io !== 'undefined') {
+            const socket = io();
+            socket.on("balanceUpdate", (data) => {
+                if (data && data.username === urlUserId) {
+                    if (window.parent) window.parent.postMessage({ action: "refresh_wallet" }, "*");
+                }
+            });
+        }
+
+        function toggleAuto() {
+            isAuto = !isAuto;
+            const autoEl = document.getElementById("auto-btn");
+            if (autoEl) autoEl.classList.toggle('active', isAuto);
+            if (isAuto && !isSpinning) triggerCannonBallShoot(0);
+            playAudio('click');
+        }
+
+        function stopFishingState() {
+            isSpinning = false;
+            if (document.getElementById("spin-btn")) document.getElementById("spin-btn").disabled = false;
+            if (!isAuto && autoInterval) clearTimeout(autoInterval);
+        }
+
+        const slotSounds = {
+            click: new Audio('spin2.mp3'), spin: new Audio('spin2.mp3'),
+            win: new Audio('win2.mp3'), wheel: new Audio('spin2.mp3')
+        };
+        Object.values(slotSounds).forEach(s => s.load());
+
+        function playAudio(type) {
+            try { if(slotSounds[type]) { slotSounds[type].currentTime = 0; slotSounds[type].play().catch(e => {}); } } catch(e) {}
+        }
+    </script>
+</body>
+</html>
